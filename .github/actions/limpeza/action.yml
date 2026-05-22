@@ -1,8 +1,0 @@
-name: Limpeza
-description: Limpa os arquivos desnecessários
-runs:
-  using: composite
-  steps:
-    - name: Limpar workspace
-      shell: bash
-      run: rm -rf ${{ github.workspace }}/*

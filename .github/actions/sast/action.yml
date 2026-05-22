@@ -1,0 +1,15 @@
+name: SAST
+description: Analise estatica de código
+inputs:
+  sonar-token:
+    required: true
+  sonar-host-url:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Sonar
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        SONAR_HOST_URL: ${{ inputs.sonar-host-url }}

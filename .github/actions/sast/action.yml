@@ -5,10 +5,42 @@ inputs:
     required: true
   sonar-host-url:
     required: true
+  java-version:
+    description: 'Versão do Java (somente para projetos Java)'
+    required: false
+    default: '21'
+
 runs:
   using: composite
   steps:
-    - name: Sonar
+    - name: Detectar tipo de projeto
+      id: maven
+      shell: bash
+      run: |
+        if [ -f "pom.xml" ]; then
+          echo "type=maven" >> $GITHUB_OUTPUT
+        else
+          echo "type=other" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Setup Java
+      if: ${{ steps.maven.outputs.type == 'maven' }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: temurin
+        cache: maven
+
+    - name: Sonar - Maven
+      if: ${{ steps.maven.outputs.type == 'maven' }}
+      shell: bash
+      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+      env:
+        SONAR_TOKEN: ${{ inputs.sonar-token }}
+        SONAR_HOST_URL: ${{ inputs.sonar-host-url }}
+
+    - name: Sonar - Terraform e outros
+      if: ${{ steps.maven.outputs.type == 'other' }}
       uses: SonarSource/sonarqube-scan-action@v6
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}

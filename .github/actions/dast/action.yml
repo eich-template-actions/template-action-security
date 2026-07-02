@@ -1,0 +1,14 @@
+name: Dast
+description: Analise Dinamica de código
+inputs:
+  hostname:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Run DAST
+      shell: bash
+      env:
+        HOSTNAME: ${{ inputs.hostname }}
+      run: docker run -t zaproxy/zap-stable zap-baseline.py -t $HOSTNAME -s -l WARN || true

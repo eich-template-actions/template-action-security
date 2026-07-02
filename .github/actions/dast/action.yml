@@ -3,10 +3,19 @@ description: Analise Dinamica de código
 inputs:
   hostname:
     required: true
+  time:
+    required: false
+    default: 0
 
 runs:
   using: composite
   steps:
+    - name: Wait before starting DAST
+      env:
+        TIME: ${{ inputs.time }}
+      shell: bash
+      if: inputs.time > 0
+      run: sleep $TIME
     - name: Run DAST
       shell: bash
       env:

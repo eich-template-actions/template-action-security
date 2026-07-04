@@ -23,24 +23,24 @@ runs:
           --exit-code 0 \
           "$APPLICATION:$VERSION"
 
-    - name: Run Trivy on image (SARIF)
-      env:
-        APPLICATION: ${{ inputs.application }}
-        VERSION: "${{ inputs.version }}"
-      shell: bash
-      run: |
-        docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v "$PWD:/workspace" \
-          ghcr.io/aquasecurity/trivy:0.70.0 image \
-          --format sarif \
-          --severity CRITICAL,HIGH \
-          --exit-code 0 \
-          --output /workspace/trivy-results.sarif \
-          "$APPLICATION:$VERSION"
+    # - name: Run Trivy on image (SARIF)
+    #   env:
+    #     APPLICATION: ${{ inputs.application }}
+    #     VERSION: "${{ inputs.version }}"
+    #   shell: bash
+    #   run: |
+    #     docker run --rm \
+    #       -v /var/run/docker.sock:/var/run/docker.sock \
+    #       -v "$PWD:/workspace" \
+    #       ghcr.io/aquasecurity/trivy:0.70.0 image \
+    #       --format sarif \
+    #       --severity CRITICAL,HIGH \
+    #       --exit-code 0 \
+    #       --output /workspace/trivy-results.sarif \
+    #       "$APPLICATION:$VERSION"
 
-    - name: Upload Trivy results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: trivy-results.sarif
-        category: trivy-image-${{ inputs.application }}
+    # - name: Upload Trivy results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   with:
+    #     sarif_file: trivy-results.sarif
+    #     category: trivy-image-${{ inputs.application }}

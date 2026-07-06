@@ -34,7 +34,13 @@ runs:
     - name: Sonar - Maven
       if: ${{ steps.maven.outputs.type == 'maven' }}
       shell: bash
-      run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+      run: |
+        {
+          echo "###🔍 Sonar"
+          echo '```'
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+          echo '```'
+        } | tee -a "$GITHUB_STEP_SUMMARY"
       env:
         SONAR_TOKEN: ${{ inputs.sonar-token }}
         SONAR_HOST_URL: ${{ inputs.sonar-host-url }}

@@ -15,13 +15,18 @@ runs:
         VERSION: "${{ inputs.version }}"
       shell: bash
       run: |
-        docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          ghcr.io/aquasecurity/trivy:0.70.0 image \
-          --format table \
-          --severity CRITICAL,HIGH \
-          --exit-code 0 \
-          "$APPLICATION:$VERSION"
+        {
+          echo "### 🔍 Validação de Imagem - $APPLICATION:$VERSION"
+          echo '```'
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            ghcr.io/aquasecurity/trivy:0.70.0 image \
+            --format table \
+            --severity CRITICAL,HIGH \
+            --exit-code 0 \
+            "$APPLICATION:$VERSION"
+          echo '```'
+        } | tee -a "$GITHUB_STEP_SUMMARY"
 
     # - name: Run Trivy on image (SARIF)
     #   env:
